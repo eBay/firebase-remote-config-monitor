@@ -1,0 +1,10 @@
+{
+    "projects": [{
+        "name": "",
+        "id": "",
+        "key": { }
+    }],
+    "slack": {
+        "webHookUrl": ""
+    }
+}

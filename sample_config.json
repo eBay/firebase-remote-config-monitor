@@ -1,0 +1,42 @@
+{
+    "projects":
+    [
+        {
+            "name": "Firebase Project Name",
+            "id": "firebase-project-id",
+            "key": {
+                "type": "service_account",
+                "project_id": "firebase-project-id",
+                "private_key_id": "1234567abcdef",
+                "private_key": "-----BEGIN PRIVATE KEY-----\nlkjasdlfjasldkfjaslkdjfalskdjflaksdjflsakdjZ\n-----END PRIVATE KEY-----\n",
+                "client_email": "firebase-adminsdk-123456@firebase-project-id.iam.gserviceaccount.com",
+                "client_id": "321654978abcd",
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-699ob%40firebase-project-id.iam.gserviceaccount.com"
+            }
+        },
+        {
+            "name": "Firebase Project Name 2",
+            "id": "firebase-project-id-2",
+            "key": {
+                "type": "service_account",
+                "project_id": "firebase-project-id-2",
+                "private_key_id": "987654321fedbca",
+                "private_key": "-----BEGIN PRIVATE KEY-----\ndfsefgdscsafsdfvasdsdfsvswvsdvewf\n-----END PRIVATE KEY-----\n",
+                "client_email": "firebase-adminsdk-123456@firebase-project-id-2.iam.gserviceaccount.com",
+                "client_id": "321654978abcd",
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-699ob%40firebase-project-id-2.iam.gserviceaccount.com"
+            }
+
+        }
+    ],
+    "slack":
+    {
+        "webHookUrl": "https://hooks.slack.com/services/000000/11111111"
+    }
+}

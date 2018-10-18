@@ -1,0 +1,21 @@
+{
+    "name": "@ebay/firebase-rc-monitor",
+    "version": "1.0.0",
+    "description": "Monitors changes to firebase remote config project(s) and posts changes to slack.",
+    "author": "Jake Hall @ eBay",
+    "license": "Apache-2.0",
+    "main": "firebase-retrieve.js",
+    "repository": "https://github.com/eBay/firebase-rc-monitor",
+    "scripts": {
+        "test": "npm run test-unit",
+        "test-unit": "NODE_ENV=test mocha 'src/test/*.spec.js'"
+    },
+    "devDependencies": {
+        "mocha": "5.2",
+        "sinon": "6.3.5"
+    },
+    "dependencies": {
+        "request": "^2.88",
+        "googleapis": "^34.0"
+    }
+}
