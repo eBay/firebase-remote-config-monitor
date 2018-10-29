@@ -11,30 +11,26 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-
+const admin = require('firebase-admin');
 const request = require('request');
 const { google } = require('googleapis');
 
 const firebaseRetriever = function() {
   var self = {};
 
-  self.retrieveData = async function(fbConsoleConfig) {
-      console.log('getting data for ' + fbConsoleConfig.name);
-      try {
-        const token = await getAccessToken(fbConsoleConfig.key)
-        return await checkConfigChanges(fbConsoleConfig, token);
-      } catch(e) {
-          console.log("Error received when retrieving data from firebase\n" + e);
-      }
+  self.retrieveData = async function(project, version) {
+      const token = await getAccessToken();
+      return await getRemoteConfigData(project, token.access_token, version);
   };
 
-  function checkConfigChanges(consoleConfig, token) {
+  function getRemoteConfigData(project, token, version) {
     return new Promise((resolve, reject) => {
-      var url = "https://firebaseremoteconfig.googleapis.com/v1/projects/" + consoleConfig.id + "/remoteConfig"
+      var url = `https://firebaseremoteconfig.googleapis.com/v1/projects/${project.projectId}/remoteConfig?versionNumber=${version}`
       request.get(url, (error, response, body) => {
         if (body && response.statusCode >= 200 && response.statusCode < 300) {
             resolve(body);
           } else if (body) {
+            console.log("rejected token " + JSON.stringify(token));
             reject(body);
           } else {
             reject(error);
@@ -43,23 +39,10 @@ const firebaseRetriever = function() {
     });
   }
 
-  function getAccessToken(key) {
-    return new Promise((resolve, reject) => {
-      var jwtClient = new google.auth.JWT(
-        key.client_email,
-        null,
-        key.private_key,
-        ["https://www.googleapis.com/auth/firebase.remoteconfig"],
-        null
-      );
-      jwtClient.authorize(function(err, tokens) {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(tokens.access_token);
-      });
-    });
+  function getAccessToken() {
+    return admin.credential
+       .applicationDefault()
+       .getAccessToken()
   }
 
   return self;

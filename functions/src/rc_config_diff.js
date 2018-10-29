@@ -25,13 +25,13 @@ const firebaseDiff = function() {
     var diffs = [];
     var newKeys = [];
     var oldKeys = []
-    for (var key in newValues) {
-      newKeys.push(key)
-      newValues[key].name = key
+    for (var newKey in newValues) {
+      newKeys.push(newKey)
+      newValues[newKey].name = newKey
     }
-    for (var key in oldValues) {
-      oldKeys.push(key)
-      oldValues[key].name = key
+    for (var oldKey in oldValues) {
+      oldKeys.push(oldKey)
+      oldValues[oldKey].name = oldKey
     }
     newKeys.sort()
     oldKeys.sort()

@@ -12,27 +12,24 @@
  * the License.
  */
 
-const configReader = require("./config_reader.js")
 const firebaseRetriever = require('./firebase_retriever.js');
-const configAnalyzer = require('./config_analyzer.js');
 const slackPoster = require('./slack_poster.js');
+const firebaseDiff = require('./rc_config_diff.js');
 
 const monitorRunner = function() {
   var self = {};
-  self.run = async function() {
-    var configuration = configReader.readConfig();
-    const projects = configuration.projects;
-
-    for(var i = 0; i < projects.length; i++) {
-      try {
-
-        project = projects[i];
-        var remoteConfig = await firebaseRetriever.retrieveData(project);
-        var diffResults = configAnalyzer.findDiffs(project, remoteConfig);
-        slackPoster.postResult(project, diffResults, configuration.slack.webHookUrl);
-      } catch (e) {
-        console.log("error encountered for project " + project.name + "\n" + e);
+  self.run = async function(project, version, updateUser) {
+     try {
+      if (version === 1) {
+        slackPoster.postFirstVersionSeen(project)
+      } else {
+        const newConfig = await firebaseRetriever.retrieveData(project, version);
+        const oldConfig = await firebaseRetriever.retrieveData(project, version - 1);
+        const diffResults = firebaseDiff.findDifferences(JSON.parse(oldConfig), JSON.parse(newConfig));
+        slackPoster.postDiffs(project, version, updateUser, diffResults);
       }
+    } catch (e) {
+      console.log("error encountered:\n" + e);
     }
   }
   return self;

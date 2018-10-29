@@ -12,48 +12,44 @@
  * the License.
  */
 
-const slackPoster = require('./../slack_poster.js');
+const slackPoster = require('./..//slack_poster.js');
+const configReader = require("./..//slack_config_reader.js");
 const sinon = require('sinon');
 const request = require('request');
 const assert = require('assert');
 
-describe('Slack posting tests', function() {
+describe('Slack posting tests', () => {
   var requestPostStub;
-  beforeEach(function() {
-    requestPostStub = sinon.stub(request, 'post');
+
+  beforeEach(() => {
+    requestPostStub = sinon.stub(request, 'post')
     requestPostStub.yields(null, { statusCode: 200 }, null);
+    sinon.stub(configReader, "readConfig").returns(config);
   });
 
-  afterEach(function(){
+  afterEach(() => {
     request.post.restore();
+    configReader.readConfig.restore();
   });
 
-  it('should not post if diffs are nil', function() {
-    requestPostStub.resetHistory();
-    slackPoster.postResult(project, null, slackUrl);
-    sinon.assert.notCalled(requestPostStub)
-  });
-
-  it('should not post if diffs are empty', function() {
-    requestPostStub.resetHistory();
-    slackPoster.postResult(project, [], slackUrl);
-    sinon.assert.notCalled(requestPostStub)
-  });
-
-  it('should post diffs which are sent in to given project', function() {
-    slackPoster.postResult(project, diffs, slackUrl);
+  it('should post diffs', () =>{
+    slackPoster.postDiffs(project, version, user, diffs);
     sinon.assert.calledOnce(requestPostStub)
     var requestArgs = requestPostStub.getCall(0);
-    assert.equal(requestArgs.args[0], slackUrl);
-    assert(requestArgs.args[1].form.payload.match(/\*Test Project\* had 4 changes in firebase console:/))
-  });
+    assert.equal(requestArgs.args[0], config.slackWebHookUrl);
+    assert(requestArgs.args[1].form.payload.includes("had 4 changes"))
+    assert(requestArgs.args[1].form.payload.includes(config.siteDisplayName))
+    assert(requestArgs.args[1].form.payload.includes(project.projectId))
+  });``
 
-  it('should new monitoring for given project given project', function() {
-    slackPoster.postResult(project, { isNewProject: true }, slackUrl);
+  it('should new monitoring for given project given project', () => {
+    slackPoster.postFirstVersionSeen(project);
     sinon.assert.calledOnce(requestPostStub)
     var requestArgs = requestPostStub.getCall(0);
-    assert.equal(requestArgs.args[0], slackUrl);
-    assert(requestArgs.args[1].form.payload.match(/Change monitoring begun for Test Project in firebase console/));
+    assert.equal(requestArgs.args[0], config.slackWebHookUrl);
+    assert(requestArgs.args[1].form.payload.includes("First version of config values seen"));
+    assert(requestArgs.args[1].form.payload.includes(config.siteDisplayName))
+    assert(requestArgs.args[1].form.payload.includes(project.projectId))
   });
 });
 
@@ -77,7 +73,6 @@ const someParameter1 = { name: "someParam1", values: [someParamValue, someParamV
 const someParameter1WithDifferentValue  = { name: "someParam1", values: [someParamValue, someParamValue1] };
 const someParameter1WithAlteredValue = { name: "someParam1", values: [someParamValue, someParamValue2WithDifferentValue] };
 const someParameter2 = { name: "someParam2", values: [someParamValue, someParamValue2] };
-const slackUrl = "https://www.fakeslack.com"
 
 diffs = [{ type: "Condition Deleted", payload: someCondition2 },
          { type: "Parameter Added", payload: someParameter1 },
@@ -85,4 +80,10 @@ diffs = [{ type: "Condition Deleted", payload: someCondition2 },
          { type: "Condition Changed", payload: [ someCondition1, someCondition1WithDifferentComponent] }
        ];
 
-const project =  { name: 'Test Project', page: 'https://console.firebase.google.com/project/default-demo-app-ab2e1/config' };
+const config = {
+    slackWebHookUrl: "https://hooks.slack.com/services/12345",
+    siteDisplayName: "Project Name"
+}
+const version = 123;
+const user = { name: "some user", email: "test@test.com" };
+const project =  { projectId: 'some-project' };

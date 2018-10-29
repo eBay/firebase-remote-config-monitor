@@ -12,6 +12,16 @@
  * the License.
  */
 
-const runner = require("./monitor_runner.js")
+const configuration = require("../slack_config.json")
 
-runner.run();
+const slackConfigReader = function() {
+  var self = {};
+
+  self.readConfig = function() {
+    return configuration;
+  }
+
+  return self;
+}();
+
+module.exports = slackConfigReader;

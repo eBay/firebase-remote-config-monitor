@@ -12,46 +12,46 @@
  * the License.
  */
 
-const firebaseDiff = require('./../diff_config.js');
+const firebaseDiff = require('./../rc_config_diff.js');
 const assert = require('assert');
 
-describe('Diffing tests', function() {
-  it('should produce no differences when same configs diffed', function() {
+describe('Diffing tests', () => {
+  it('should produce no differences when same configs diffed', () => {
     var diffs = firebaseDiff.findDifferences(oneConditionOneParameter, oneConditionOneParameter);
     assert.equal(diffs.length, 0);
   });
 
-  it('should find added parameter', function() {
+  it('should find added parameter', () => {
     var diffs = firebaseDiff.findDifferences(oneCondition, oneConditionOneParameter);
     assert.equal(diffs.length, 1);
     assert.equal(diffs[0].type, "Parameter Added")
   });
 
-  it('should find removed parameter', function() {
+  it('should find removed parameter', () => {
     var diffs = firebaseDiff.findDifferences(oneConditionOneParameter, oneCondition);
     assert.equal(diffs.length, 1);
     assert.equal(diffs[0].type, "Parameter Deleted")
   });
 
-  it('should find modified parameter', function() {
+  it('should find modified parameter', () => {
     var diffs = firebaseDiff.findDifferences(oneParameter, oneModifiedParameter);
     assert.equal(diffs.length, 1);
     assert.equal(diffs[0].type, "Parameter Changed")
   });
 
-  it('should find added condition', function() {
+  it('should find added condition', () => {
     var diffs = firebaseDiff.findDifferences(oneParameter, oneConditionOneParameter);
     assert.equal(diffs.length, 1);
     assert.equal(diffs[0].type, "Condition Added")
   });
 
-  it('should find removed condition', function() {
+  it('should find removed condition', () => {
     var diffs = firebaseDiff.findDifferences(oneConditionOneParameter, oneParameter);
     assert.equal(diffs.length, 1);
     assert.equal(diffs[0].type, "Condition Deleted")
   });
 
-  it('should find modified parameter', function() {
+  it('should find modified parameter', () => {
     var diffs = firebaseDiff.findDifferences(oneCondition, oneModifiedCondition);
     assert.equal(diffs.length, 1);
     assert.equal(diffs[0].type, "Condition Changed")
