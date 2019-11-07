@@ -18,13 +18,14 @@
     },
     "devDependencies": {
         "eslint": "^5.16.0",
-        "eslint-plugin-promise": "^4.1.1",
-        "firebase-functions-test": "^0.1.6",
+        "eslint-plugin-promise": "^4.2.1",
+        "firebase-functions-test": "^0.1.7",
         "mocha": "6.1",
         "sinon": "7.3.2"
     },
     "dependencies": {
-        "request": "^2.88",
-        "googleapis": "^39.2"
+        "firebase-functions": "^3.3.0",
+        "googleapis": "^39.2",
+        "request": "^2.88"
     }
 }
