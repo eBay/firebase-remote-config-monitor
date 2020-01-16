@@ -87,6 +87,8 @@ const slackPoster = function() {
     if (user) {
       if (user.name) {
         attachment.author_name = user.name;
+      } else if (user.email) {
+        attachment.author_name = user.email;
       }
       if (user.email) {
         attachment.author_link = `mailto:${user.email}`;
@@ -94,6 +96,8 @@ const slackPoster = function() {
       if (user.imageUrl) {
         attachment.author_icon = user.imageUrl;
       }
+    } else {
+      attachment.author_name = 'unknown';
     }
 
     return attachment;
