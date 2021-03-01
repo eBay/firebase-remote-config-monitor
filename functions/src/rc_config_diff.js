@@ -18,13 +18,80 @@ const firebaseDiff = function() {
   self.findDifferences = function (oldConfig, newConfig) {
     const conditionDiffs = diffConditions(oldConfig.conditions, newConfig.conditions);
     const paramDiffs = diffParameters(oldConfig.parameters, newConfig.parameters);
-    return conditionDiffs.concat(paramDiffs);
+    var paramGroups = [];
+
+    for (var key in oldConfig.parameterGroups) {
+      paramGroups.push(key)
+    }
+    for (var key in newConfig.parameterGroups) {
+      paramGroups.push(key)
+    }
+    var allParamGroupSet = new Set(paramGroups)
+    var allParamGroups = Array.from(allParamGroupSet)
+
+    var diffParameGroups = [];
+    var paramGroupDiffs = [];
+
+    for (var i in allParamGroups) {
+      diffParamGroups = diffParameterGroups(oldConfig.parameterGroups, newConfig.parameterGroups, allParamGroups[i]);
+      paramGroupDiffs = paramGroupDiffs.concat(diffParamGroups);
+    }
+    return conditionDiffs.concat(paramDiffs).concat(paramGroupDiffs);
+  };
+
+  function diffParameterGroups(oldValues, newValues, parameterGroup){
+    var diffs = [];
+    var newKeys = [];
+    var oldKeys = [];
+    var newParameterGroups = [];
+    var oldParameterGroups = [];
+
+    if (oldValues.hasOwnProperty(parameterGroup)) {
+      for (var oldKey in oldValues[parameterGroup]) {
+        oldKeys.push(oldKey)
+        oldValues[parameterGroup][oldKey].name = oldKey
+      }
+    } 
+
+    if (newValues.hasOwnProperty(parameterGroup)) {
+      for (var newKey in newValues[parameterGroup]) {
+        newKeys.push(newKey)
+        newValues[parameterGroup][newKey].name = newKey
+      }
+    }
+    newKeys.sort()
+    oldKeys.sort()
+    var j = 0;
+    for (var i = 0; i < newKeys.length; i++) {
+      const newName = newKeys[i];
+      const newValue = newValues[parameterGroup][newName];
+
+      while (oldKeys.length > j && newName > oldKeys[j]) {
+        diffs.push({ type: "Parameter Deleted in group: " + parameterGroup, payload: oldValues[parameterGroup][oldKeys[j]] })
+        j++;
+      }
+      if (oldKeys.length > j && oldKeys[j] === newName) {
+        const oldValue = oldValues[parameterGroup][oldKeys[j]]
+        if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+            diffs.push({ type: "Parameter Changed in group: " + parameterGroup, payload: [oldValue, newValue]})
+        }
+        j++;
+      } else {
+        diffs.push({ type: "Parameter Added in group: " + parameterGroup, payload: newValue})
+      }
+    }
+    while (oldKeys.length > j) {
+      diffs.push({ type: "Parameter Deleted in group: " + parameterGroup, payload: oldValues[parameterGroup][oldKeys[j]] })
+      j++;
+    }
+    console.log(diffs)
+    return diffs;
   };
 
   function diffParameters(oldValues, newValues) {
     var diffs = [];
     var newKeys = [];
-    var oldKeys = []
+    var oldKeys = [];
     for (var newKey in newValues) {
       newKeys.push(newKey)
       newValues[newKey].name = newKey
@@ -59,7 +126,7 @@ const firebaseDiff = function() {
       j++;
     }
     return diffs;
-  }
+  };
 
   function diffConditions(oldValues, newValues) {
     oldValues = setupConditions(oldValues)
