@@ -145,11 +145,14 @@ const oneParameterInParameterGroup = {
   {
     "bSomeParameterGroup":
     {
-      "bSomeParameter":
+      "parameters": 
       {
-        "defaultValue":
+        "bSomeParameter":
         {
-          "value": "false"
+          "defaultValue":
+          {
+            "value": "true"
+          }
         }
       }
     }
@@ -172,11 +175,14 @@ const oneModifiedParameterInParameterGroup = {
   {
     "bSomeParameterGroup":
     {
-      "bSomeParameter":
+      "parameters": 
       {
-        "defaultValue":
+        "bSomeParameter":
         {
-          "value": "true"
+          "defaultValue":
+          {
+            "value": "true"
+          }
         }
       }
     }

@@ -47,16 +47,16 @@ const firebaseDiff = function() {
     var oldParameterGroups = [];
 
     if (oldValues.hasOwnProperty(parameterGroup)) {
-      for (var oldKey in oldValues[parameterGroup]) {
+      for (var oldKey in oldValues[parameterGroup].parameters) {
         oldKeys.push(oldKey)
-        oldValues[parameterGroup][oldKey].name = oldKey
+        oldValues[parameterGroup].parameters[oldKey].name = oldKey
       }
     } 
 
     if (newValues.hasOwnProperty(parameterGroup)) {
-      for (var newKey in newValues[parameterGroup]) {
+      for (var newKey in newValues[parameterGroup].parameters) {
         newKeys.push(newKey)
-        newValues[parameterGroup][newKey].name = newKey
+        newValues[parameterGroup].parameters[newKey].name = newKey
       }
     }
     newKeys.sort()
@@ -64,10 +64,10 @@ const firebaseDiff = function() {
     var j = 0;
     for (var i = 0; i < newKeys.length; i++) {
       const newName = newKeys[i];
-      const newValue = newValues[parameterGroup][newName];
+      const newValue = newValues[parameterGroup].parameters[newName];
 
       while (oldKeys.length > j && newName > oldKeys[j]) {
-        diffs.push({ type: "Parameter Deleted in group: " + parameterGroup, payload: oldValues[parameterGroup][oldKeys[j]] })
+        diffs.push({ type: "Parameter Deleted in group: " + parameterGroup, payload: oldValues[parameterGroup].parameters[oldKeys[j]] })
         j++;
       }
       if (oldKeys.length > j && oldKeys[j] === newName) {
@@ -81,7 +81,7 @@ const firebaseDiff = function() {
       }
     }
     while (oldKeys.length > j) {
-      diffs.push({ type: "Parameter Deleted in group: " + parameterGroup, payload: oldValues[parameterGroup][oldKeys[j]] })
+      diffs.push({ type: "Parameter Deleted in group: " + parameterGroup, payload: oldValues[parameterGroup].parameters[oldKeys[j]] })
       j++;
     }
     console.log(diffs)
