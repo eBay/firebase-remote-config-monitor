@@ -96,7 +96,6 @@ const oneConditionOneParameter = {
       }
     }
   },
-  "parameterGroups":  {}
 };
 
 const oneParameter = {
@@ -111,7 +110,6 @@ const oneParameter = {
       }
     }
   },
-  "parameterGroups":  {}
 };
 
 const oneModifiedParameter = {
@@ -126,7 +124,6 @@ const oneModifiedParameter = {
       }
     }
   },
-  "parameterGroups":  {}
 };
 
 const oneParameterInParameterGroup = {
@@ -200,7 +197,6 @@ const oneCondition = {
   "parameters":
    {
   },
-  "parameterGroups":  {}
 };
 
 const oneModifiedCondition = {
@@ -214,5 +210,4 @@ const oneModifiedCondition = {
   "parameters":
    {
   },
-  "parameterGroups":  {}
 };

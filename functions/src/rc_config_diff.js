@@ -16,6 +16,10 @@ const firebaseDiff = function() {
   var self = {};
 
   self.findDifferences = function (oldConfig, newConfig) {
+    console.log("oldConfig");
+    console.log(oldConfig);
+    console.log("newConfig");
+    console.log(newConfig);
     const conditionDiffs = diffConditions(oldConfig.conditions, newConfig.conditions);
     const paramDiffs = diffParameters(oldConfig.parameters, newConfig.parameters);
     var paramGroups = [];
@@ -44,14 +48,14 @@ const firebaseDiff = function() {
     var newKeys = [];
     var oldKeys = [];
 
-    if (oldValues.hasOwnProperty(parameterGroup)) {
+    if (typeof oldValues != 'undefined' && oldValues.hasOwnProperty(parameterGroup)) {
       for (var oldKey in oldValues[parameterGroup].parameters) {
         oldKeys.push(oldKey)
         oldValues[parameterGroup].parameters[oldKey].name = oldKey
       }
     } 
 
-    if (newValues.hasOwnProperty(parameterGroup)) {
+    if (typeof newValues != 'undefined' && newValues.hasOwnProperty(parameterGroup)) {
       for (var newKey in newValues[parameterGroup].parameters) {
         newKeys.push(newKey)
         newValues[parameterGroup].parameters[newKey].name = newKey
