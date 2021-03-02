@@ -29,22 +29,20 @@ const firebaseDiff = function() {
     var allParamGroupSet = new Set(paramGroups)
     var allParamGroups = Array.from(allParamGroupSet)
 
-    var diffParameGroups = [];
     var paramGroupDiffs = [];
-
+    var tempParamGroupDiffs;
     for (var i in allParamGroups) {
-      diffParamGroups = diffParameterGroups(oldConfig.parameterGroups, newConfig.parameterGroups, allParamGroups[i]);
-      paramGroupDiffs = paramGroupDiffs.concat(diffParamGroups);
+      tempParamGroupDiffs = diffParameterGroups(oldConfig.parameterGroups, newConfig.parameterGroups, allParamGroups[i]);
+      paramGroupDiffs = paramGroupDiffs.concat(tempParamGroupDiffs);
     }
-    return conditionDiffs.concat(paramDiffs).concat(paramGroupDiffs);
+    var allDiffs = conditionDiffs.concat(paramDiffs).concat(paramGroupDiffs);
+    return allDiffs;
   };
 
   function diffParameterGroups(oldValues, newValues, parameterGroup){
     var diffs = [];
     var newKeys = [];
     var oldKeys = [];
-    var newParameterGroups = [];
-    var oldParameterGroups = [];
 
     if (oldValues.hasOwnProperty(parameterGroup)) {
       for (var oldKey in oldValues[parameterGroup].parameters) {
@@ -65,26 +63,24 @@ const firebaseDiff = function() {
     for (var i = 0; i < newKeys.length; i++) {
       const newName = newKeys[i];
       const newValue = newValues[parameterGroup].parameters[newName];
-
       while (oldKeys.length > j && newName > oldKeys[j]) {
-        diffs.push({ type: "Parameter Deleted in group: " + parameterGroup, payload: oldValues[parameterGroup].parameters[oldKeys[j]] })
+        diffs.push({ type: "Parameter Deleted in group \"" + parameterGroup + "\"", payload: oldValues[parameterGroup].parameters[oldKeys[j]]})
         j++;
       }
       if (oldKeys.length > j && oldKeys[j] === newName) {
-        const oldValue = oldValues[parameterGroup][oldKeys[j]]
+        const oldValue = oldValues[parameterGroup].parameters[oldKeys[j]]
         if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-            diffs.push({ type: "Parameter Changed in group: " + parameterGroup, payload: [oldValue, newValue]})
+            diffs.push({ type: "Parameter Changed in group \"" + parameterGroup + "\"", payload: [oldValue, newValue]})
         }
         j++;
       } else {
-        diffs.push({ type: "Parameter Added in group: " + parameterGroup, payload: newValue})
+        diffs.push({ type: "Parameter Added in group \"" + parameterGroup + "\"", payload: newValue})
       }
     }
     while (oldKeys.length > j) {
-      diffs.push({ type: "Parameter Deleted in group: " + parameterGroup, payload: oldValues[parameterGroup].parameters[oldKeys[j]] })
+      diffs.push({ type: "Parameter Deleted in group \"" + parameterGroup + "\"", payload: oldValues[parameterGroup].parameters[oldKeys[j]] })
       j++;
     }
-    console.log(diffs)
     return diffs;
   };
 

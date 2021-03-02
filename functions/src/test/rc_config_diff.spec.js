@@ -61,19 +61,19 @@ describe('Diffing tests', () => {
   it('should find added parameter in parameter group', () => {
     var diffs = firebaseDiff.findDifferences(oneParameter, oneModifiedParameterInParameterGroup);
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Parameter Added in group: bSomeParameterGroup");
+    assert.equal(diffs[0].type, "Parameter Added in group \"bSomeParameterGroup\"");
   });
 
   it('should find deleted parameter in parameter group', () => {
     var diffs = firebaseDiff.findDifferences(oneModifiedParameterInParameterGroup, oneParameter);
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Parameter Deleted in group: bSomeParameterGroup");
+    assert.equal(diffs[0].type, "Parameter Deleted in group \"bSomeParameterGroup\"");
   });
 
   it('should find modified parameter in parameter group', () => {
     var diffs = firebaseDiff.findDifferences(oneParameterInParameterGroup, oneModifiedParameterInParameterGroup);
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Parameter Changed in group: bSomeParameterGroup");
+    assert.equal(diffs[0].type, "Parameter Changed in group \"bSomeParameterGroup\"");
   });
 
 });
@@ -181,7 +181,7 @@ const oneModifiedParameterInParameterGroup = {
         {
           "defaultValue":
           {
-            "value": "true"
+            "value": "false"
           }
         }
       }
