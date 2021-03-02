@@ -16,10 +16,6 @@ const firebaseDiff = function() {
   var self = {};
 
   self.findDifferences = function (oldConfig, newConfig) {
-    console.log("oldConfig");
-    console.log(oldConfig);
-    console.log("newConfig");
-    console.log(newConfig);
     const conditionDiffs = diffConditions(oldConfig.conditions, newConfig.conditions);
     const paramDiffs = diffParameters(oldConfig.parameters, newConfig.parameters);
     var paramGroups = [];
