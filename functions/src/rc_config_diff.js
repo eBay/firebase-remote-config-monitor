@@ -12,58 +12,80 @@
  * the License.
  */
 
-const firebaseDiff = function() {
+const firebaseDiff = (function () {
   var self = {};
 
   self.findDifferences = function (oldConfig, newConfig) {
-    const conditionDiffs = diffConditions(oldConfig.conditions, newConfig.conditions);
-    const paramDiffs = diffParameters(oldConfig.parameters, newConfig.parameters);
+    const conditionDiffs = diffConditions(
+      oldConfig.conditions,
+      newConfig.conditions
+    );
+    const paramDiffs = diffParameters(
+      mergeParameterWithGroups(oldConfig.parameterGroups, oldConfig.parameters),
+      mergeParameterWithGroups(newConfig.parameterGroups, newConfig.parameters)
+    );
     return conditionDiffs.concat(paramDiffs);
   };
+
+  function mergeParameterWithGroups(parameterGroups, extraParameter) {
+    var parameters = extraParameter;
+    if (parameterGroups) {
+      for (const item in parameterGroups) {
+        parameters = { ...parameters, ...parameterGroups[item].parameters };
+      }
+    }
+    return parameters;
+  }
 
   function diffParameters(oldValues, newValues) {
     var diffs = [];
     var newKeys = [];
-    var oldKeys = []
+    var oldKeys = [];
     for (var newKey in newValues) {
-      newKeys.push(newKey)
-      newValues[newKey].name = newKey
+      newKeys.push(newKey);
+      newValues[newKey].name = newKey;
     }
     for (var oldKey in oldValues) {
-      oldKeys.push(oldKey)
-      oldValues[oldKey].name = oldKey
+      oldKeys.push(oldKey);
+      oldValues[oldKey].name = oldKey;
     }
-    newKeys.sort()
-    oldKeys.sort()
+    newKeys.sort();
+    oldKeys.sort();
     var j = 0;
     for (var i = 0; i < newKeys.length; i++) {
       const newName = newKeys[i];
       const newValue = newValues[newName];
 
       while (oldKeys.length > j && newName > oldKeys[j]) {
-        diffs.push({ type: "Parameter Deleted", payload: oldValues[oldKeys[j]] })
+        diffs.push({
+          type: "Parameter Deleted",
+          payload: oldValues[oldKeys[j]],
+        });
         j++;
       }
       if (oldKeys.length > j && oldKeys[j] === newName) {
-        const oldValue = oldValues[oldKeys[j]]
+        const oldValue = oldValues[oldKeys[j]];
         if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-            diffs.push({ type: "Parameter Changed", payload: [oldValue, newValue]})
+          diffs.push({
+            type: "Parameter Changed",
+            payload: [oldValue, newValue],
+          });
         }
         j++;
       } else {
-        diffs.push({ type: "Parameter Added", payload: newValue})
+        diffs.push({ type: "Parameter Added", payload: newValue });
       }
     }
     while (oldKeys.length > j) {
-      diffs.push({ type: "Parameter Deleted", payload: oldValues[oldKeys[j]] })
+      diffs.push({ type: "Parameter Deleted", payload: oldValues[oldKeys[j]] });
       j++;
     }
     return diffs;
   }
 
   function diffConditions(oldValues, newValues) {
-    oldValues = setupConditions(oldValues)
-    newValues = setupConditions(newValues)
+    oldValues = setupConditions(oldValues);
+    newValues = setupConditions(newValues);
     var diffs = [];
 
     var j = 0;
@@ -72,21 +94,24 @@ const firebaseDiff = function() {
       const newName = newValue.name;
 
       while (oldValues.length > j && newName > oldValues[j].name) {
-        diffs.push({ type: "Condition Deleted", payload: oldValues[j] })
+        diffs.push({ type: "Condition Deleted", payload: oldValues[j] });
         j++;
       }
       if (oldValues.length > j && oldValues[j].name === newName) {
-        const oldValue = oldValues[j]
+        const oldValue = oldValues[j];
         if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-            diffs.push({ type: "Condition Changed", payload: [oldValue, newValue]})
+          diffs.push({
+            type: "Condition Changed",
+            payload: [oldValue, newValue],
+          });
         }
         j++;
       } else {
-        diffs.push({ type: "Condition Added", payload: newValue})
+        diffs.push({ type: "Condition Added", payload: newValue });
       }
     }
     while (oldValues.length > j) {
-      diffs.push({ type: "Condition Deleted", payload: oldValues[j] })
+      diffs.push({ type: "Condition Deleted", payload: oldValues[j] });
       j++;
     }
     return diffs;
@@ -94,20 +119,18 @@ const firebaseDiff = function() {
 
   function setupConditions(conditions) {
     for (var i = 0; i < conditions.length; i++) {
-      conditions[i].position = i
+      conditions[i].position = i;
     }
-    return conditions.sort(nameSort)
+    return conditions.sort(nameSort);
   }
 
-  function nameSort(a,b) {
-    if (a.name < b.name)
-      return -1;
-    if (a.name > b.name)
-      return 1;
+  function nameSort(a, b) {
+    if (a.name < b.name) return -1;
+    if (a.name > b.name) return 1;
     return 0;
   }
 
   return self;
-}();
+})();
 
 module.exports = firebaseDiff;
