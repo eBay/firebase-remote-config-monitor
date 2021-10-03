@@ -12,123 +12,195 @@
  * the License.
  */
 
-const firebaseDiff = require('./../rc_config_diff.js');
-const assert = require('assert');
+const firebaseDiff = require("./../rc_config_diff.js");
+const assert = require("assert");
 
-describe('Diffing tests', () => {
-  it('should produce no differences when same configs diffed', () => {
-    var diffs = firebaseDiff.findDifferences(oneConditionOneParameter, oneConditionOneParameter);
+describe("Diffing tests", () => {
+  it("should produce no differences when same configs diffed", () => {
+    var diffs = firebaseDiff.findDifferences(
+      oneConditionOneParameter,
+      oneConditionOneParameter
+    );
     assert.equal(diffs.length, 0);
   });
 
-  it('should find added parameter', () => {
-    var diffs = firebaseDiff.findDifferences(oneCondition, oneConditionOneParameter);
+  it("should find added parameter", () => {
+    var diffs = firebaseDiff.findDifferences(
+      oneCondition,
+      oneConditionOneParameter
+    );
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Parameter Added")
+    assert.equal(diffs[0].type, "Parameter Added");
   });
 
-  it('should find removed parameter', () => {
-    var diffs = firebaseDiff.findDifferences(oneConditionOneParameter, oneCondition);
+  it("should find removed parameter", () => {
+    var diffs = firebaseDiff.findDifferences(
+      oneConditionOneParameter,
+      oneCondition
+    );
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Parameter Deleted")
+    assert.equal(diffs[0].type, "Parameter Deleted");
   });
 
-  it('should find modified parameter', () => {
-    var diffs = firebaseDiff.findDifferences(oneParameter, oneModifiedParameter);
+  it("should find modified parameter", () => {
+    var diffs = firebaseDiff.findDifferences(
+      oneParameter,
+      oneModifiedParameter
+    );
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Parameter Changed")
+    assert.equal(diffs[0].type, "Parameter Changed");
   });
 
-  it('should find added condition', () => {
-    var diffs = firebaseDiff.findDifferences(oneParameter, oneConditionOneParameter);
+  it("should find added condition", () => {
+    var diffs = firebaseDiff.findDifferences(
+      oneParameter,
+      oneConditionOneParameter
+    );
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Condition Added")
+    assert.equal(diffs[0].type, "Condition Added");
   });
 
-  it('should find removed condition', () => {
-    var diffs = firebaseDiff.findDifferences(oneConditionOneParameter, oneParameter);
+  it("should find removed condition", () => {
+    var diffs = firebaseDiff.findDifferences(
+      oneConditionOneParameter,
+      oneParameter
+    );
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Condition Deleted")
+    assert.equal(diffs[0].type, "Condition Deleted");
   });
 
-  it('should find modified parameter', () => {
-    var diffs = firebaseDiff.findDifferences(oneCondition, oneModifiedCondition);
+  it("should find modified parameter", () => {
+    var diffs = firebaseDiff.findDifferences(
+      oneCondition,
+      oneModifiedCondition
+    );
     assert.equal(diffs.length, 1);
-    assert.equal(diffs[0].type, "Condition Changed")
+    assert.equal(diffs[0].type, "Condition Changed");
   });
 
+  it("should find added parameter in group", () => {
+    var diffs = firebaseDiff.findDifferences(oneParameter, oneGroupParameter);
+    assert.equal(diffs.length, 1);
+    assert.equal(diffs[0].type, "Parameter Added");
+  });
+
+  it("should find removed parameter in group", () => {
+    var diffs = firebaseDiff.findDifferences(oneGroupParameter, oneParameter);
+    assert.equal(diffs.length, 1);
+    assert.equal(diffs[0].type, "Parameter Deleted");
+  });
+
+  it("should find modified parameter in group", () => {
+    var diffs = firebaseDiff.findDifferences(
+      oneGroupParameter,
+      oneGroupParameterModified
+    );
+    assert.equal(diffs.length, 1);
+    assert.equal(diffs[0].type, "Parameter Changed");
+  });
 });
 
 const oneConditionOneParameter = {
-  "conditions": [
+  conditions: [
     {
-      "name": "1stCondition",
-      "expression": "percent <= 10",
-      "tagColor": "BROWN"
-    }
+      name: "1stCondition",
+      expression: "percent <= 10",
+      tagColor: "BROWN",
+    },
   ],
-  "parameters":
-   {
-    "bSomeParameter":
-    {
-      "defaultValue":
-      {
-        "value": "false"
-      }
-    }
-  }
+  parameters: {
+    bSomeParameter: {
+      defaultValue: {
+        value: "false",
+      },
+    },
+  },
 };
 
 const oneParameter = {
-  "conditions": [  ],
-  "parameters":
-   {
-    "bSomeParameter":
-    {
-      "defaultValue":
-      {
-        "value": "false"
-      }
-    }
-  }
+  conditions: [],
+  parameters: {
+    bSomeParameter: {
+      defaultValue: {
+        value: "false",
+      },
+    },
+  },
+};
+
+const oneGroupParameter = {
+  conditions: [],
+  parameters: {
+    bSomeParameter: {
+      defaultValue: {
+        value: "false",
+      },
+    },
+  },
+  parameterGroups: {
+    group1: {
+      parameters: {
+        innerParameter: {
+          defaultValue: {
+            value: "false",
+          },
+        },
+      },
+    },
+  },
+};
+
+const oneGroupParameterModified = {
+  conditions: [],
+  parameters: {
+    bSomeParameter: {
+      defaultValue: {
+        value: "false",
+      },
+    },
+  },
+  parameterGroups: {
+    group1: {
+      parameters: {
+        innerParameter: {
+          defaultValue: {
+            value: "true",
+          },
+        },
+      },
+    },
+  },
 };
 
 const oneModifiedParameter = {
-  "conditions": [  ],
-  "parameters":
-   {
-    "bSomeParameter":
-    {
-      "defaultValue":
-      {
-        "value": "true"
-      }
-    }
-  }
+  conditions: [],
+  parameters: {
+    bSomeParameter: {
+      defaultValue: {
+        value: "true",
+      },
+    },
+  },
 };
 
 const oneCondition = {
-  "conditions": [
+  conditions: [
     {
-      "name": "1stCondition",
-      "expression": "percent <= 10",
-      "tagColor": "BROWN"
-    }
+      name: "1stCondition",
+      expression: "percent <= 10",
+      tagColor: "BROWN",
+    },
   ],
-  "parameters":
-   {
-  }
+  parameters: {},
 };
 
 const oneModifiedCondition = {
-  "conditions": [
+  conditions: [
     {
-      "name": "1stCondition",
-      "expression": "percent <= 20",
-      "tagColor": "BROWN"
-    }
+      name: "1stCondition",
+      expression: "percent <= 20",
+      tagColor: "BROWN",
+    },
   ],
-  "parameters":
-   {
-  }
+  parameters: {},
 };
