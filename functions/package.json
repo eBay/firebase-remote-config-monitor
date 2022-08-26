@@ -12,13 +12,13 @@
   "dependencies": {
     "firebase-admin": "^11.0.1",
     "firebase-functions": "^3.22.0",
-    "googleapis": "^39.2",
+    "googleapis": "^107.0.0",
     "request": "^2.88"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-plugin-promise": "^4.1.1",
-    "mocha": "6.1",
+    "mocha": "^6.2.3",
     "sinon": "7.3.2"
   },
   "engines": {
