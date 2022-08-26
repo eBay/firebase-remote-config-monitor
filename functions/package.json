@@ -22,7 +22,7 @@
     "sinon": "7.3.2"
   },
   "engines": {
-    "node": "10"
+    "node": "16"
   },
   "private": true
 }
