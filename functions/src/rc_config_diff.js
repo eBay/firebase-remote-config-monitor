@@ -118,6 +118,7 @@ const firebaseDiff = (function () {
   }
 
   function setupConditions(conditions) {
+    if (!conditions) return [];
     for (var i = 0; i < conditions.length; i++) {
       conditions[i].position = i;
     }
