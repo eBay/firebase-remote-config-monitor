@@ -18,7 +18,7 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-plugin-promise": "^4.1.1",
-    "mocha": "^6.2.3",
+    "mocha": "^10.2.0",
     "sinon": "7.3.2"
   },
   "engines": {
